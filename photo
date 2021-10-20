@@ -1,0 +1,41 @@
+import logging
+
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import InputFile
+from aiogram.types import ReplyKeyboardRemove,ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+
+API_TOKEN = '2019302491:AAFS80zm_gr6EUsBvEL5g9RVlDR8Itsrl4c'
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher(bot)
+
+logging.basicConfig(level=logging.INFO)
+
+@dp.message_handler(content_types='text')
+async def main(message: types.Message):
+
+    buttons = [
+        types.InlineKeyboardButton(text="ДА",callback_data="1"),
+        types.InlineKeyboardButton(text="НЕТ",callback_data="2")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    
+    pic1 = InputFile("C:/Users/a.stepanushkina/Desktop/awdawdawd/vodosvinka-ili-kapibara.jpg")
+    await bot.send_photo(message.from_user.id, pic1,caption='Нравится?',reply_markup=keyboard)
+
+    return keyboard 
+
+@dp.callback_query_handler(text_contains='1')
+async def callbacks_data(message: types.CallbackQuery):
+
+        await bot.send_message(message.from_user.id, '❤️')
+
+@dp.callback_query_handler(text_contains='2')
+async def callbacks_data(message: types.CallbackQuery):
+
+        await bot.send_message(message.from_user.id, '🖤')
+
+
+
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)
